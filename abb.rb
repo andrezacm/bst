@@ -15,6 +15,10 @@ class Tree
     @root.add_node(Node.new(key))
   end
 
+  def delete_node (key)
+    @root.delete_node(key)
+  end
+
   class Node
 
     attr_accessor :left, :right, :parent, :key, :value, :how_many_nodes_left, :how_many_nodes_right
@@ -44,13 +48,27 @@ class Tree
       when 0  then true
       end      
     end
+    
+    def delete_node(k)
+      case key <=> k
+        when 0 then delete()
+      end
+    end
 
     def inspect
       "{#{key}::#{left.inspect}|#{right.inspect}}"
     end
 
 
-    private 
+    private
+    
+      def delete()
+        if parent
+          if how_many_nodes_left == 0 and how_many_nodes_right == 0 then
+            parent.left  = nil if parent.left.key  == key
+            parent.right = nil if parent.right.key == key
+          end
+      end
 
       def add_left(node)
         if how_many_nodes_left == 0 then
@@ -71,11 +89,13 @@ class Tree
       def add_node_in_left_tree(node)
         @left = node
         @how_many_nodes_left+=1
+        node.parent = self
       end
 
       def add_node_in_right_tree(node)
         @right = node
         @how_many_nodes_right+=1
+        node.parent = self
       end
 
   end
